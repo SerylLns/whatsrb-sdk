@@ -20,7 +20,7 @@ module WhatsrbCloud
         @auto_run_inbound     = data['auto_run_inbound']
         @debounce_seconds     = data['debounce_seconds']
         @inbound_config       = data['inbound_config']
-        @payload_schema       = data['payload_schema']
+        @payload_schema       = PayloadSchema.new(data['payload_schema'])
         @tools                = data['tools']
         @business_account_id  = data['business_account_id']
         @created_at           = data['created_at']
