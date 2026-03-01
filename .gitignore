@@ -1,0 +1,15 @@
+# Ruby
+ruby/vendor/
+ruby/.bundle/
+ruby/pkg/
+ruby/*.gem
+
+# JS
+js/node_modules/
+js/dist/
+js/.env
+
+# Editor
+.DS_Store
+.idea/
+.vscode/
