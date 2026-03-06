@@ -3,22 +3,26 @@
 module WhatsrbCloud
   module Objects
     class Session
-      attr_reader :id, :name, :status, :phone_number, :qr_code, :created_at, :updated_at
+      attr_reader :id, :name, :status, :status_reason, :phone_number, :qr_code,
+                  :connected, :last_connected_at, :created_at, :updated_at
 
       def initialize(data, client: nil)
-        @id           = data['id']
-        @name         = data['name']
-        @status       = data['status']
-        @phone_number = data['phone_number']
-        @qr_code      = data['qr_code']
-        @created_at   = data['created_at']
-        @updated_at   = data['updated_at']
+        @id                = data['id']
+        @name              = data['name']
+        @status            = data['status']
+        @status_reason     = data['status_reason']
+        @phone_number      = data['phone_number']
+        @qr_code           = data['qr_code']
+        @connected         = data['connected']
+        @last_connected_at = data['last_connected_at']
+        @created_at        = data['created_at']
+        @updated_at        = data['updated_at']
         @client       = client
         @raw          = data
       end
 
       def connected?
-        @status == 'connected'
+        @connected == true || @status == 'connected'
       end
 
       def send_message(to:, text:)
@@ -55,11 +59,14 @@ module WhatsrbCloud
 
       def reload
         refreshed = @client.sessions.retrieve(@id)
-        @status       = refreshed.status
-        @phone_number = refreshed.phone_number
-        @qr_code      = refreshed.qr_code
-        @name         = refreshed.name
-        @updated_at   = refreshed.updated_at
+        @status            = refreshed.status
+        @status_reason     = refreshed.status_reason
+        @phone_number      = refreshed.phone_number
+        @qr_code           = refreshed.qr_code
+        @connected         = refreshed.connected
+        @last_connected_at = refreshed.last_connected_at
+        @name              = refreshed.name
+        @updated_at        = refreshed.updated_at
         self
       end
 

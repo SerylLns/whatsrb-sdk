@@ -31,6 +31,11 @@ module WhatsrbCloud
 
       alias_method :create, :connect_manual
 
+      def window(id, phone_number:)
+        response = @connection.get("/business_accounts/#{id}/window?phone_number=#{CGI.escape(phone_number)}")
+        response['data']
+      end
+
       def delete(id)
         @connection.delete("/business_accounts/#{id}")
         true

@@ -37,4 +37,17 @@ RSpec.describe WhatsrbCloud::Resources::BusinessAccounts do
       expect(account).to be_connected
     end
   end
+
+  describe '#window' do
+    it 'returns window data for a phone number' do
+      stub_request(:get, "#{FakeServer::BASE}/business_accounts/ba_1/window?phone_number=%2B33600000001")
+        .to_return(status: 200,
+                   body: '{"data":{"phone_number":"+33600000001","open":true,"last_inbound_at":"2026-03-06T10:00:00Z","expires_at":"2026-03-07T10:00:00Z"}}',
+                   headers: FakeServer.json_headers)
+
+      result = resource.window('ba_1', phone_number: '+33600000001')
+      expect(result['open']).to be(true)
+      expect(result['phone_number']).to eq('+33600000001')
+    end
+  end
 end

@@ -6,20 +6,39 @@ RSpec.describe WhatsrbCloud::Objects::Session do
   let(:session_data) do
     {
       'id' => 'sess_1', 'name' => 'Bot', 'status' => 'connected',
-      'phone_number' => '+33612345678', 'qr_code' => nil
+      'status_reason' => nil, 'phone_number' => '+33612345678', 'qr_code' => nil,
+      'connected' => true, 'last_connected_at' => '2025-01-01T12:00:00Z'
     }
   end
 
   let(:session) { described_class.new(session_data, client: client) }
 
   describe '#connected?' do
-    it 'returns true when status is connected' do
+    it 'returns true when connected boolean is true' do
       expect(session).to be_connected
     end
 
-    it 'returns false when status is not connected' do
-      session = described_class.new(session_data.merge('status' => 'disconnected'), client: client)
-      expect(session).not_to be_connected
+    it 'returns true when status is connected even without boolean' do
+      s = described_class.new(session_data.merge('connected' => nil), client: client)
+      expect(s).to be_connected
+    end
+
+    it 'returns false when not connected' do
+      s = described_class.new(session_data.merge('status' => 'disconnected', 'connected' => false), client: client)
+      expect(s).not_to be_connected
+    end
+  end
+
+  describe '#status_reason' do
+    it 'returns the status reason' do
+      s = described_class.new(session_data.merge('status_reason' => 'phone_offline'), client: client)
+      expect(s.status_reason).to eq('phone_offline')
+    end
+  end
+
+  describe '#last_connected_at' do
+    it 'returns the last connected timestamp' do
+      expect(session.last_connected_at).to eq('2025-01-01T12:00:00Z')
     end
   end
 

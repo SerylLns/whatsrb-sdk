@@ -4,7 +4,8 @@ module WhatsrbCloud
   module Objects
     class BusinessAccount
       attr_reader :id, :waba_id, :business_name, :display_name, :phone_number,
-                  :phone_number_id, :status, :quality_rating, :connected
+                  :phone_number_id, :status, :quality_rating, :connected,
+                  :meta_token_expires_at
 
       def initialize(data, client: nil)
         @id              = data['id']
@@ -14,9 +15,10 @@ module WhatsrbCloud
         @phone_number    = data['phone_number']
         @phone_number_id = data['phone_number_id']
         @status          = data['status']
-        @quality_rating  = data['quality_rating']
-        @connected       = data['connected']
-        @client          = client
+        @quality_rating         = data['quality_rating']
+        @connected              = data['connected']
+        @meta_token_expires_at  = data['meta_token_expires_at']
+        @client                 = client
         @raw             = data
       end
 
@@ -37,8 +39,33 @@ module WhatsrbCloud
         )
       end
 
+      def send_image(to:, url:)
+        messages_resource.create(to: to, message_type: 'image', content: url)
+      end
+
+      def send_video(to:, url:)
+        messages_resource.create(to: to, message_type: 'video', content: url)
+      end
+
+      def send_audio(to:, url:)
+        messages_resource.create(to: to, message_type: 'audio', content: url)
+      end
+
+      def send_document(to:, url:)
+        messages_resource.create(to: to, message_type: 'document', content: url)
+      end
+
       def messages
         messages_resource
+      end
+
+      def window_open?(phone_number)
+        result = @client.business_accounts.window(@id, phone_number: phone_number)
+        result['open'] == true
+      end
+
+      def window(phone_number)
+        @client.business_accounts.window(@id, phone_number: phone_number)
       end
 
       def templates
@@ -49,8 +76,9 @@ module WhatsrbCloud
         refreshed = @client.business_accounts.retrieve(@id)
         @status        = refreshed.status
         @quality_rating = refreshed.quality_rating
-        @connected     = refreshed.connected
-        @display_name  = refreshed.display_name
+        @connected              = refreshed.connected
+        @meta_token_expires_at  = refreshed.meta_token_expires_at
+        @display_name           = refreshed.display_name
         @phone_number  = refreshed.phone_number
         self
       end
