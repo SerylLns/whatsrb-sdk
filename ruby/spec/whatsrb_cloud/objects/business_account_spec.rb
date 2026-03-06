@@ -107,6 +107,46 @@ RSpec.describe WhatsrbCloud::Objects::BusinessAccount do
     end
   end
 
+  describe '#send_buttons' do
+    it 'sends interactive button message with hash buttons' do
+      stub = stub_request(:post, "#{FakeServer::BASE}/business_accounts/ba_1/messages")
+             .with(body: '{"message":{"to":"+33600000001","message_type":"interactive","content":"Pick one:","message_metadata":{"buttons":[{"id":"yes","title":"Yes"},{"id":"no","title":"No"}]}}}')
+             .to_return(status: 200,
+                        body: '{"data":{"id":"msg_btn","message_type":"interactive"}}',
+                        headers: FakeServer.json_headers)
+
+      msg = account.send_buttons(
+        to: '+33600000001',
+        body: 'Pick one:',
+        buttons: [{ 'id' => 'yes', 'title' => 'Yes' }, { 'id' => 'no', 'title' => 'No' }]
+      )
+      expect(msg).to be_a(WhatsrbCloud::Objects::Message)
+      expect(stub).to have_been_requested
+    end
+
+    it 'accepts string shortcuts for buttons' do
+      stub = stub_request(:post, "#{FakeServer::BASE}/business_accounts/ba_1/messages")
+             .with { |req| JSON.parse(req.body)['message']['message_metadata']['buttons'].first['title'] == 'Yes' }
+             .to_return(status: 200,
+                        body: '{"data":{"id":"msg_btn2","message_type":"interactive"}}',
+                        headers: FakeServer.json_headers)
+
+      account.send_buttons(to: '+33600000001', body: 'Pick:', buttons: ['Yes', 'No'])
+      expect(stub).to have_been_requested
+    end
+
+    it 'limits to 3 buttons' do
+      stub = stub_request(:post, "#{FakeServer::BASE}/business_accounts/ba_1/messages")
+             .with { |req| JSON.parse(req.body)['message']['message_metadata']['buttons'].size == 3 }
+             .to_return(status: 200,
+                        body: '{"data":{"id":"msg_btn3","message_type":"interactive"}}',
+                        headers: FakeServer.json_headers)
+
+      account.send_buttons(to: '+33600000001', body: 'Pick:', buttons: ['A', 'B', 'C', 'D'])
+      expect(stub).to have_been_requested
+    end
+  end
+
   describe '#window_open?' do
     it 'returns true when window is open' do
       stub_request(:get, "#{FakeServer::BASE}/business_accounts/ba_1/window?phone_number=%2B33600000001")

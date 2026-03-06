@@ -55,6 +55,22 @@ module WhatsrbCloud
         messages_resource.create(to: to, message_type: 'document', content: url)
       end
 
+      def send_buttons(to:, body:, buttons:)
+        formatted = buttons.first(3).map.with_index do |btn, i|
+          case btn
+          when Hash then btn
+          when String then { 'id' => "btn_#{i}", 'title' => btn }
+          end
+        end
+
+        messages_resource.create(
+          to: to,
+          message_type: 'interactive',
+          content: body,
+          message_metadata: { buttons: formatted }
+        )
+      end
+
       def messages
         messages_resource
       end

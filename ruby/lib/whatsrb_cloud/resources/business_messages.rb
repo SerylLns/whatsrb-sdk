@@ -3,7 +3,7 @@
 module WhatsrbCloud
   module Resources
     class BusinessMessages
-      VALID_TYPES = %w[text template image video audio document].freeze
+      VALID_TYPES = %w[text template image video audio document interactive].freeze
 
       def initialize(connection:, account_id:)
         @connection = connection
@@ -54,7 +54,7 @@ module WhatsrbCloud
       end
 
       def build_message_body(params)
-        params.slice(:to, :message_type, :content, :template_name, :template_language)
+        params.slice(:to, :message_type, :content, :template_name, :template_language, :message_metadata)
       end
     end
   end
