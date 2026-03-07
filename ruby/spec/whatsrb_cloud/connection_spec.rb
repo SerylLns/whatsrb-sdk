@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe WhatsrbCloud::Connection do
-  let(:connection) { described_class.new(api_key: 'wrb_live_test', base_url: 'https://api.whatsrb.com', timeout: 30) }
+  let(:connection) { described_class.new(api_key: 'wrb_live_test', base_url: 'https://whatsrb.com', timeout: 30) }
 
   describe 'auth headers' do
     it 'sends Authorization Bearer header' do
-      stub = stub_request(:get, 'https://api.whatsrb.com/api/v1/test')
+      stub = stub_request(:get, 'https://whatsrb.com/api/v1/test')
              .with(headers: { 'Authorization' => 'Bearer wrb_live_test' })
              .to_return(status: 200, body: '{"ok": true}', headers: { 'Content-Type' => 'application/json' })
 
@@ -14,7 +14,7 @@ RSpec.describe WhatsrbCloud::Connection do
     end
 
     it 'sends User-Agent header' do
-      stub = stub_request(:get, 'https://api.whatsrb.com/api/v1/test')
+      stub = stub_request(:get, 'https://whatsrb.com/api/v1/test')
              .with(headers: { 'User-Agent' => "whatsrb-cloud-ruby/#{WhatsrbCloud::VERSION}" })
              .to_return(status: 200, body: '{"ok": true}', headers: { 'Content-Type' => 'application/json' })
 
@@ -23,7 +23,7 @@ RSpec.describe WhatsrbCloud::Connection do
     end
 
     it 'sends Content-Type application/json' do
-      stub = stub_request(:post, 'https://api.whatsrb.com/api/v1/test')
+      stub = stub_request(:post, 'https://whatsrb.com/api/v1/test')
              .with(headers: { 'Content-Type' => 'application/json' })
              .to_return(status: 200, body: '{}', headers: { 'Content-Type' => 'application/json' })
 
@@ -40,7 +40,7 @@ RSpec.describe WhatsrbCloud::Connection do
     end
 
     it 'returns nil for empty response' do
-      stub_request(:delete, 'https://api.whatsrb.com/api/v1/test')
+      stub_request(:delete, 'https://whatsrb.com/api/v1/test')
         .to_return(status: 200, body: '', headers: {})
 
       result = connection.delete('/test')
@@ -108,7 +108,7 @@ RSpec.describe WhatsrbCloud::Connection do
 
   describe 'HTTP methods' do
     it 'sends POST with JSON body' do
-      stub = stub_request(:post, 'https://api.whatsrb.com/api/v1/sessions')
+      stub = stub_request(:post, 'https://whatsrb.com/api/v1/sessions')
              .with(body: '{"name":"Bot"}')
              .to_return(status: 200, body: '{"id":"sess_1"}', headers: { 'Content-Type' => 'application/json' })
 
@@ -117,7 +117,7 @@ RSpec.describe WhatsrbCloud::Connection do
     end
 
     it 'sends PATCH with JSON body' do
-      stub = stub_request(:patch, 'https://api.whatsrb.com/api/v1/webhooks/wh_1')
+      stub = stub_request(:patch, 'https://whatsrb.com/api/v1/webhooks/wh_1')
              .with(body: '{"url":"https://new.example.com"}')
              .to_return(status: 200, body: '{"id":"wh_1"}', headers: { 'Content-Type' => 'application/json' })
 
@@ -126,7 +126,7 @@ RSpec.describe WhatsrbCloud::Connection do
     end
 
     it 'sends DELETE' do
-      stub = stub_request(:delete, 'https://api.whatsrb.com/api/v1/sessions/sess_1')
+      stub = stub_request(:delete, 'https://whatsrb.com/api/v1/sessions/sess_1')
              .to_return(status: 200, body: '', headers: {})
 
       connection.delete('/sessions/sess_1')

@@ -57,5 +57,13 @@ RSpec.describe WhatsrbCloud::Client do
     it 'returns Templates resource scoped to account' do
       expect(client.templates('ba_abc')).to be_a(WhatsrbCloud::Resources::Templates)
     end
+
+    it 'returns Agents resource' do
+      expect(client.agents).to be_a(WhatsrbCloud::Resources::Agents)
+    end
+
+    it 'returns AgentRuns resource scoped to agent' do
+      expect(client.agent_runs('agt_abc')).to be_a(WhatsrbCloud::Resources::AgentRuns)
+    end
   end
 end

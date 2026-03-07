@@ -6,7 +6,7 @@ module WhatsrbCloud
 
     def initialize
       @api_key  = nil
-      @base_url = 'https://api.whatsrb.com'
+      @base_url = 'https://whatsrb.com'
       @timeout  = 30
     end
 

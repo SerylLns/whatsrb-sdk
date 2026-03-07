@@ -60,7 +60,7 @@ session.send_message(to: "+33612345678", text: "Hello from WhatsRB!")
 ```ruby
 WhatsrbCloud.configure do |c|
   c.api_key  = "wrb_live_xxx"
-  c.base_url = "https://api.whatsrb.com"  # default
+  c.base_url = "https://whatsrb.com"  # default
   c.timeout  = 30                          # seconds, default
 end
 
@@ -72,7 +72,7 @@ client = WhatsrbCloud::Client.new
 ```ruby
 client = WhatsrbCloud::Client.new(
   api_key:  "wrb_live_xxx",
-  base_url: "https://api.whatsrb.com",
+  base_url: "https://whatsrb.com",
   timeout:  10
 )
 ```

@@ -5,8 +5,8 @@ module WhatsrbCloud
     class Agent
       attr_reader :id, :name, :description, :system_prompt, :model,
                   :temperature, :max_tokens, :active, :auto_run_inbound,
-                  :debounce_seconds, :inbound_config, :payload_schema,
-                  :allowed_actions, :tools,
+                  :debounce_seconds, :context_ttl_minutes, :inbound_config,
+                  :payload_schema, :allowed_actions, :tools,
                   :business_account_id, :created_at, :updated_at
 
       def initialize(data, client: nil)
@@ -20,6 +20,7 @@ module WhatsrbCloud
         @active               = data['active']
         @auto_run_inbound     = data['auto_run_inbound']
         @debounce_seconds     = data['debounce_seconds']
+        @context_ttl_minutes  = data['context_ttl_minutes']
         @inbound_config       = data['inbound_config']
         @payload_schema       = PayloadSchema.new(data['payload_schema'])
         @allowed_actions      = data['allowed_actions'] || []

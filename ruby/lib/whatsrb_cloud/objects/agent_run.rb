@@ -36,9 +36,12 @@ module WhatsrbCloud
       def finished?  = completed? || failed?
 
       # Output accessors
-      def intent     = @output&.dig('intent')
-      def confidence = @output&.dig('confidence')
-      def actions    = @output&.dig('actions') || []
+      def intent          = @output&.dig('intent')
+      def confidence      = @output&.dig('confidence')
+      def actions         = @output&.dig('actions') || []
+      def suggested_reply = @output&.dig('suggested_reply')
+      def context_summary = @output&.dig('context_summary')
+      def language        = @output&.dig('language')
 
       # Dispatch actions through an ActionRegistry
       def dispatch(registry)

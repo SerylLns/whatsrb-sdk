@@ -41,4 +41,35 @@ RSpec.describe WhatsrbCloud::WebhookSignature do
       expect(described_class.verify?(payload: payload, secret: nil, signature: prefixed_signature)).to be false
     end
   end
+
+  describe '.verify_request' do
+    let(:body_io) { StringIO.new(payload) }
+    let(:request) do
+      double(body: body_io).tap do |r|
+        allow(r).to receive(:get_header).with('HTTP_X_WHATSRB_SIGNATURE').and_return(prefixed_signature)
+        allow(r).to receive(:get_header).with('HTTP_X_WEBHOOK_SIGNATURE').and_return(nil)
+        allow(r).to receive(:get_header).with('HTTP_X_WEBHOOK_TIMESTAMP').and_return(nil)
+      end
+    end
+
+    it 'verifies a Rack-compatible request' do
+      expect(described_class.verify_request(request, secret: secret)).to be true
+    end
+
+    it 'rewinds the body after reading' do
+      described_class.verify_request(request, secret: secret)
+      expect(request.body.read).to eq(payload)
+    end
+
+    it 'returns false for invalid signature' do
+      allow(request).to receive(:get_header).with('HTTP_X_WHATSRB_SIGNATURE').and_return('sha256=bad')
+      expect(described_class.verify_request(request, secret: secret)).to be false
+    end
+
+    it 'falls back to X-Webhook-Signature header' do
+      allow(request).to receive(:get_header).with('HTTP_X_WHATSRB_SIGNATURE').and_return(nil)
+      allow(request).to receive(:get_header).with('HTTP_X_WEBHOOK_SIGNATURE').and_return(prefixed_signature)
+      expect(described_class.verify_request(request, secret: secret)).to be true
+    end
+  end
 end

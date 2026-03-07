@@ -49,5 +49,13 @@ module WhatsrbCloud
     def templates(account_id)
       Resources::Templates.new(connection: @connection, account_id: account_id)
     end
+
+    def agents
+      Resources::Agents.new(client: self, connection: @connection)
+    end
+
+    def agent_runs(agent_id)
+      Resources::AgentRuns.new(client: self, connection: @connection, agent_id: agent_id)
+    end
   end
 end

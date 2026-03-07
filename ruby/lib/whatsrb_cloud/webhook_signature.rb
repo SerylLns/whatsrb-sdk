@@ -27,6 +27,24 @@ module WhatsrbCloud
       secure_compare(expected, signature)
     end
 
+    # Verify a webhook from a Rack-compatible request (Rails, Sinatra, etc.)
+    #
+    # @param request [ActionDispatch::Request, Rack::Request] the incoming request
+    # @param secret [String] webhook secret
+    # @param tolerance [Integer] max age in seconds (default 300)
+    # @return [Boolean]
+    def verify_request(request, secret:, tolerance: TOLERANCE)
+      body = request.body.read
+      request.body.rewind
+      verify?(
+        payload: body,
+        secret: secret,
+        signature: request.get_header('HTTP_X_WHATSRB_SIGNATURE') || request.get_header('HTTP_X_WEBHOOK_SIGNATURE'),
+        timestamp: request.get_header('HTTP_X_WEBHOOK_TIMESTAMP'),
+        tolerance: tolerance
+      )
+    end
+
     def stale_timestamp?(timestamp, tolerance)
       return false unless timestamp
 

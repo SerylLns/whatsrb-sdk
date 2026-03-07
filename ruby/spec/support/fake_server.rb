@@ -3,7 +3,7 @@
 module FakeServer
   extend WebMock::API
 
-  BASE = 'https://api.whatsrb.com/api/v1'
+  BASE = 'https://whatsrb.com/api/v1'
 
   module_function
 

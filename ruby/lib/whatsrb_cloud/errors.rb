@@ -14,7 +14,11 @@ module WhatsrbCloud
   class AuthenticationError < Error; end
   class ForbiddenError < Error; end
   class NotFoundError < Error; end
-  class ValidationError < Error; end
+  class ValidationError < Error
+    def details
+      body&.dig('details') || {}
+    end
+  end
   class ConflictError < Error; end
   class ServerError < Error; end
 
